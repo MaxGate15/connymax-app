@@ -1,5 +1,6 @@
 import { FontAwesome, Ionicons } from '@expo/vector-icons';
 
+import { useUser } from '@/contexts/UserContext';
 import { router } from 'expo-router';
 import React, { useState } from 'react';
 import {
@@ -18,12 +19,13 @@ import {
 const { width, height } = Dimensions.get('window');
 
 export default function LoginScreen() {
+  const { setUser, getUserByEmail } = useUser();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
     if (!email || !password) {
       Alert.alert('Error', 'Please fill in all fields');
       return;
@@ -31,12 +33,30 @@ export default function LoginScreen() {
     
     setIsLoading(true);
     
-    // Simulate login process
+    // Check if user exists
+    const userData = await getUserByEmail(email);
+    
     setTimeout(() => {
       setIsLoading(false);
-      // Navigate to main app
-      router.replace('/(tabs)');
-    }, 2000);
+      
+      if (!userData) {
+        Alert.alert('Error', 'User not found. Please sign up first.');
+        return;
+      }
+      
+      // Verify password
+      if (userData.password !== password) {
+        Alert.alert('Error', 'Incorrect password');
+        return;
+      }
+      
+      // Set user context
+      setUser(userData);
+      
+      // Route to appropriate interface based on user type
+      const route = userData.type === 'vendor' ? '/(vendor-tabs)/dashboard' : '/(tabs)';
+      router.replace(route);
+    }, 1500);
   };
 
   const handleSocialLogin = (provider: string) => {

@@ -1,5 +1,6 @@
 import { FontAwesome, Ionicons } from '@expo/vector-icons';
 
+import { useUser } from '@/contexts/UserContext';
 import { router } from 'expo-router';
 import React, { useState } from 'react';
 import {
@@ -8,6 +9,7 @@ import {
     KeyboardAvoidingView,
     Platform,
     SafeAreaView,
+    ScrollView,
     StyleSheet,
     Text,
     TextInput,
@@ -18,6 +20,8 @@ import {
 const { width, height } = Dimensions.get('window');
 
 export default function SignupScreen() {
+  const { setUser } = useUser();
+  const [userType, setUserType] = useState<'customer' | 'vendor'>('customer');
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -25,6 +29,12 @@ export default function SignupScreen() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  
+  // Vendor-specific fields
+  const [restaurantName, setRestaurantName] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
+  const [address, setAddress] = useState('');
+  const [businessRegNumber, setBusinessRegNumber] = useState('');
 
   const handleSignup = () => {
     if (!fullName || !email || !password || !confirmPassword) {
@@ -36,16 +46,48 @@ export default function SignupScreen() {
       Alert.alert('Error', 'Passwords do not match');
       return;
     }
+
+    // Additional validation for vendor
+    if (userType === 'vendor') {
+      if (!restaurantName || !phoneNumber || !address) {
+        Alert.alert('Error', 'Please fill in all vendor fields');
+        return;
+      }
+    }
     
     setIsLoading(true);
     
     // Simulate signup process
     setTimeout(() => {
       setIsLoading(false);
-      Alert.alert('Success', 'Account created successfully!', [
+      
+      // Set user context
+      if (userType === 'vendor') {
+        setUser({
+          type: 'vendor',
+          name: fullName,
+          email: email,
+          password: password,
+          restaurantName: restaurantName,
+          restaurantAddress: address,
+          phoneNumber: phoneNumber,
+        });
+      } else {
+        setUser({
+          type: 'customer',
+          name: fullName,
+          email: email,
+          password: password,
+        });
+      }
+      
+      const accountType = userType === 'vendor' ? 'Restaurant Owner' : 'Customer';
+      const route = userType === 'vendor' ? '/(vendor-tabs)/dashboard' : '/(tabs)';
+      
+      Alert.alert('Success', `${accountType} account created successfully!`, [
         {
           text: 'OK',
-          onPress: () => router.replace('/(tabs)'),
+          onPress: () => router.replace(route),
         },
       ]);
     }, 2000);
@@ -75,9 +117,53 @@ export default function SignupScreen() {
 
           {/* Signup Form */}
           <View style={styles.formContainer}>
+            <ScrollView 
+              style={styles.scrollView}
+              showsVerticalScrollIndicator={false}
+              contentContainerStyle={styles.scrollContent}
+            >
             <View style={styles.formCard}>
               <Text style={styles.welcomeText}>Create Account</Text>
               <Text style={styles.subtitleText}>Sign up to get started</Text>
+
+              {/* User Type Selection */}
+              <View style={styles.userTypeContainer}>
+                <TouchableOpacity
+                  style={[
+                    styles.userTypeButton,
+                    userType === 'customer' && styles.userTypeButtonActive
+                  ]}
+                  onPress={() => setUserType('customer')}
+                >
+                  <Ionicons 
+                    name="person-outline" 
+                    size={20} 
+                    color={userType === 'customer' ? '#fff' : '#666'} 
+                  />
+                  <Text style={[
+                    styles.userTypeText,
+                    userType === 'customer' && styles.userTypeTextActive
+                  ]}>Customer</Text>
+                </TouchableOpacity>
+                
+                <TouchableOpacity
+                  style={[
+                    styles.userTypeButton,
+                    userType === 'vendor' && styles.userTypeButtonActive
+                  ]}
+                  onPress={() => setUserType('vendor')}
+                >
+                  <Ionicons 
+                    name="storefront-outline" 
+                    size={20} 
+                    color={userType === 'vendor' ? '#fff' : '#666'} 
+                  />
+                  <Text style={[
+                    styles.userTypeText,
+                    userType === 'vendor' && styles.userTypeTextActive
+                  ]}>Restaurant Owner</Text>
+                </TouchableOpacity>
+              </View>
 
               {/* Full Name Input */}
               <View style={styles.inputContainer}>
@@ -91,6 +177,63 @@ export default function SignupScreen() {
                   autoCapitalize="words"
                 />
               </View>
+
+              {/* Vendor-specific fields */}
+              {userType === 'vendor' && (
+                <>
+                  {/* Restaurant Name Input */}
+                  <View style={styles.inputContainer}>
+                    <Ionicons name="restaurant-outline" size={20} color="#666" style={styles.inputIcon} />
+                    <TextInput
+                      style={styles.input}
+                      placeholder="Restaurant name"
+                      placeholderTextColor="#999"
+                      value={restaurantName}
+                      onChangeText={setRestaurantName}
+                      autoCapitalize="words"
+                    />
+                  </View>
+
+                  {/* Phone Number Input */}
+                  <View style={styles.inputContainer}>
+                    <Ionicons name="call-outline" size={20} color="#666" style={styles.inputIcon} />
+                    <TextInput
+                      style={styles.input}
+                      placeholder="Phone number"
+                      placeholderTextColor="#999"
+                      value={phoneNumber}
+                      onChangeText={setPhoneNumber}
+                      keyboardType="phone-pad"
+                    />
+                  </View>
+
+                  {/* Address Input */}
+                  <View style={styles.inputContainer}>
+                    <Ionicons name="location-outline" size={20} color="#666" style={styles.inputIcon} />
+                    <TextInput
+                      style={styles.input}
+                      placeholder="Restaurant address"
+                      placeholderTextColor="#999"
+                      value={address}
+                      onChangeText={setAddress}
+                      autoCapitalize="words"
+                    />
+                  </View>
+
+                  {/* Business Registration Number Input */}
+                  <View style={styles.inputContainer}>
+                    <Ionicons name="document-text-outline" size={20} color="#666" style={styles.inputIcon} />
+                    <TextInput
+                      style={styles.input}
+                      placeholder="Business registration number (optional)"
+                      placeholderTextColor="#999"
+                      value={businessRegNumber}
+                      onChangeText={setBusinessRegNumber}
+                      autoCapitalize="none"
+                    />
+                  </View>
+                </>
+              )}
 
               {/* Email Input */}
               <View style={styles.inputContainer}>
@@ -203,6 +346,7 @@ export default function SignupScreen() {
                 </TouchableOpacity>
               </View>
             </View>
+            </ScrollView>
           </View>
         </KeyboardAvoidingView>
       </View>
@@ -222,7 +366,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   header: {
-    flex: 0.3,
+    flex: 0.2,
     justifyContent: 'center',
     alignItems: 'center',
     paddingTop: 15,
@@ -251,9 +395,15 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   formContainer: {
-    flex: 1.7,
+    flex: 1.8,
     paddingHorizontal: 20,
     paddingBottom: 30,
+  },
+  scrollView: {
+    flex: 1,
+  },
+  scrollContent: {
+    flexGrow: 1,
   },
   formCard: {
     backgroundColor: '#fff',
@@ -280,6 +430,35 @@ const styles = StyleSheet.create({
     color: '#666',
     textAlign: 'center',
     marginBottom: 20,
+  },
+  userTypeContainer: {
+    flexDirection: 'row',
+    gap: 10,
+    marginBottom: 20,
+  },
+  userTypeButton: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#f8f9fa',
+    borderRadius: 15,
+    height: 45,
+    borderWidth: 2,
+    borderColor: '#e0e0e0',
+    gap: 8,
+  },
+  userTypeButtonActive: {
+    backgroundColor: '#00B386',
+    borderColor: '#00B386',
+  },
+  userTypeText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#666',
+  },
+  userTypeTextActive: {
+    color: '#fff',
   },
   inputContainer: {
     flexDirection: 'row',
