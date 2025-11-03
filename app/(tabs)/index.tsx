@@ -2,27 +2,26 @@ import { useUser } from '@/contexts/UserContext';
 import { Ionicons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
-import { router } from 'expo-router';
 import React from 'react';
 import { SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 export default function HomeScreen() {
   const { user } = useUser();
   const restaurants = [
-    { id: 1, name: "Mamy's Dishes", image: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=150' },
-    { id: 2, name: "Coco Cuisine", image: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=150' },
-    { id: 3, name: "Mr Bolat Pizza", image: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=150' },
-    { id: 4, name: "Abacha Cuisine", image: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=150' },
-    { id: 5, name: "Esther's Kitchen", image: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=150' },
+    { id: 1, name: "Sun Restaurant", image: 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=150' },
+    { id: 2, name: "Coco Kitchen", image: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=150' },
+    { id: 3, name: "Marilyn Pizza", image: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=150' },
+    { id: 4, name: "Gate Plate", image: 'https://images.unsplash.com/photo-1551218808-94e220e084d2?w=150' },
+    { id: 5, name: "Dufie Dishes", image: 'https://images.unsplash.com/photo-1424847651672-bf20a4b0982b?w=150' },
   ];
 
   const popularMeals = [
-    { id: 1, name: 'Fish and Chips', price: '₵100.00', image: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400', rating: 5.0, time: '20-30 mins' },
-    { id: 2, name: 'Roasted chicken', price: '₵90.00', image: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400', rating: 4.8, time: '20-30 mins' },
-    { id: 3, name: 'Grilled Fish', price: '₵85.00', image: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400', rating: 4.9, time: '15-25 mins' },
+    { id: 1, name: 'Marilyn Shawarma', price: '₵85.00', image: 'https://images.unsplash.com/photo-1595331506998-955704de9a1e?w=400', rating: 5.0, time: '20-30 mins' },
+    { id: 2, name: 'Grilled Chicken', price: '₵90.00', image: 'https://images.unsplash.com/photo-1604503468506-a8da13d82791?w=400', rating: 4.8, time: '20-30 mins' },
+    { id: 3, name: 'BBQ Chicken', price: '₵95.00', image: 'https://images.unsplash.com/photo-1598515214211-89d3c73ae83b?w=400', rating: 4.9, time: '15-25 mins' },
   ];
 
-  const categories = ['All', 'Restaurant', 'Local', 'Fine dinning'];
+  const categories = ['All', 'Restaurant', 'Local', 'Boba Shops', 'Snack Shop'];
 
   return (
     <SafeAreaView style={styles.container}>
@@ -57,9 +56,9 @@ export default function HomeScreen() {
           <LinearGradient colors={['#2C3E50', '#34495E']} style={styles.banner}>
             <View style={styles.bannerContent}>
               <View style={styles.bannerText}>
-                <Text style={styles.bannerTitle}>Free delivery today</Text>
+                <Text style={styles.bannerTitle}>Order now and get 30% discount</Text>
                 <Text style={styles.bannerDescription}>
-                  For every meals order today, you'll get free deliveries with no hidden charges.
+                  On delivery today! Limited time offer with no hidden charges.
                 </Text>
                 <TouchableOpacity style={styles.bannerButton}>
                   <Text style={styles.bannerButtonText}>Order Now</Text>
@@ -75,7 +74,7 @@ export default function HomeScreen() {
         </View>
 
         {/* Categories */}
-        <View style={styles.categoriesContainer}>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.categoriesContainer}>
           {categories.map((cat) => (
             <TouchableOpacity
               key={cat}
@@ -84,10 +83,7 @@ export default function HomeScreen() {
               <Text style={[styles.categoryText, cat === 'All' && styles.categoryTextActive]}>{cat}</Text>
             </TouchableOpacity>
           ))}
-          <TouchableOpacity>
-            <Ionicons name="chevron-forward" size={24} color="#666" />
-          </TouchableOpacity>
-        </View>
+        </ScrollView>
 
         {/* Explore Restaurants */}
         <View style={styles.section}>
@@ -166,7 +162,7 @@ const styles = StyleSheet.create({
   sectionTitle: { fontSize: 20, fontWeight: 'bold', color: '#333', marginBottom: 15, paddingHorizontal: 20 },
   horizontalScroll: { paddingLeft: 20 },
   restaurantCard: { alignItems: 'center', marginRight: 20 },
-  restaurantImage: { width: 80, height: 80, borderRadius: 40, marginBottom: 8 },
+  restaurantImage: { width: 60, height: 60, borderRadius: 30, marginBottom: 8 },
   restaurantName: { fontSize: 12, color: '#333', textAlign: 'center' },
   mealCard: { width: 180, backgroundColor: '#f8f9fa', borderRadius: 15, marginRight: 15, overflow: 'hidden' },
   mealImageContainer: { position: 'relative' },

@@ -215,91 +215,91 @@ export default function FoodFeed() {
 
   return (
     <GestureHandlerRootView style={styles.container}>
-      <PanGestureHandler
-        ref={panRef}
-        onGestureEvent={onGestureEvent}
-        onHandlerStateChange={onHandlerStateChange}
-      >
-        <Animated.View style={[styles.foodContainer, { transform: [{ translateY }] }]}>
-          <MenuItemCard
-            {...foodItems[currentIndex]}
-            onAddToCart={() => handleAddToCart(foodItems[currentIndex])}
-            cartItemCount={getCartItemCount()}
-            onCartPress={() => setIsCartVisible(true)}
-          />
-        </Animated.View>
-      </PanGestureHandler>
-      
-      {/* Cart Modal */}
-      <Modal
-        visible={isCartVisible}
-        animationType="slide"
-        presentationStyle="pageSheet"
-        onRequestClose={() => setIsCartVisible(false)}
-      >
-        <View style={styles.cartModal}>
-          <View style={styles.cartHeader}>
-            <Text style={styles.cartTitle}>Your Cart</Text>
-            <TouchableOpacity onPress={() => setIsCartVisible(false)}>
-              <Ionicons name="close" size={24} color="#333" />
-            </TouchableOpacity>
-          </View>
-          
-          {cartItems.length === 0 ? (
-            <View style={styles.emptyCart}>
-              <Ionicons name="cart-outline" size={64} color="#ccc" />
-              <Text style={styles.emptyCartText}>Your cart is empty</Text>
-              <Text style={styles.emptyCartSubtext}>Add some delicious food to get started!</Text>
+        <PanGestureHandler
+          ref={panRef}
+          onGestureEvent={onGestureEvent}
+          onHandlerStateChange={onHandlerStateChange}
+        >
+          <Animated.View style={[styles.foodContainer, { transform: [{ translateY }] }]}>
+            <MenuItemCard
+              {...foodItems[currentIndex]}
+              onAddToCart={() => handleAddToCart(foodItems[currentIndex])}
+              cartItemCount={getCartItemCount()}
+              onCartPress={() => setIsCartVisible(true)}
+            />
+          </Animated.View>
+        </PanGestureHandler>
+        
+        {/* Cart Modal */}
+        <Modal
+          visible={isCartVisible}
+          animationType="slide"
+          presentationStyle="pageSheet"
+          onRequestClose={() => setIsCartVisible(false)}
+        >
+          <View style={styles.cartModal}>
+            <View style={styles.cartHeader}>
+              <Text style={styles.cartTitle}>Your Cart</Text>
+              <TouchableOpacity onPress={() => setIsCartVisible(false)}>
+                <Ionicons name="close" size={24} color="#333" />
+              </TouchableOpacity>
             </View>
-          ) : (
-            <>
-              <ScrollView style={styles.cartItems}>
-                {cartItems.map((item) => (
-                  <View key={item.id} style={styles.cartItem}>
-                    <Image source={item.image} style={styles.cartItemImage} />
-                    <View style={styles.cartItemInfo}>
-                      <Text style={styles.cartItemTitle}>{item.title}</Text>
-                      <Text style={styles.cartItemVendor}>{item.vendor}</Text>
-                      <Text style={styles.cartItemPrice}>{item.price}</Text>
-                    </View>
-                    <View style={styles.cartItemActions}>
-                      <TouchableOpacity
-                        style={styles.quantityButton}
-                        onPress={() => updateCartItemQuantity(item.id, item.quantity - 1)}
-                      >
-                        <Ionicons name="remove" size={20} color="#00B386" />
-                      </TouchableOpacity>
-                      <Text style={styles.quantityText}>{item.quantity}</Text>
-                      <TouchableOpacity
-                        style={styles.quantityButton}
-                        onPress={() => updateCartItemQuantity(item.id, item.quantity + 1)}
-                      >
-                        <Ionicons name="add" size={20} color="#00B386" />
-                      </TouchableOpacity>
-                    </View>
-                  </View>
-                ))}
-              </ScrollView>
-              
-              <View style={styles.cartFooter}>
-                <View style={styles.totalSection}>
-                  <Text style={styles.totalLabel}>Total:</Text>
-                  <Text style={styles.totalPrice}>₵{getTotalPrice().toFixed(2)}</Text>
-                </View>
-                <TouchableOpacity
-                  style={styles.checkoutButton}
-                  onPress={() => {
-                    Alert.alert('Checkout', 'Proceeding to checkout...');
-                    setIsCartVisible(false);
-                  }}
-                >
-                  <Text style={styles.checkoutButtonText}>Proceed to Checkout</Text>
-                </TouchableOpacity>
+            
+            {cartItems.length === 0 ? (
+              <View style={styles.emptyCart}>
+                <Ionicons name="cart-outline" size={64} color="#ccc" />
+                <Text style={styles.emptyCartText}>Your cart is empty</Text>
+                <Text style={styles.emptyCartSubtext}>Add some delicious food to get started!</Text>
               </View>
-            </>
-          )}
-        </View>
-      </Modal>
+            ) : (
+              <>
+                <ScrollView style={styles.cartItems}>
+                  {cartItems.map((item) => (
+                    <View key={item.id} style={styles.cartItem}>
+                      <Image source={item.image} style={styles.cartItemImage} />
+                      <View style={styles.cartItemInfo}>
+                        <Text style={styles.cartItemTitle}>{item.title}</Text>
+                        <Text style={styles.cartItemVendor}>{item.vendor}</Text>
+                        <Text style={styles.cartItemPrice}>{item.price}</Text>
+                      </View>
+                      <View style={styles.cartItemActions}>
+                        <TouchableOpacity
+                          style={styles.quantityButton}
+                          onPress={() => updateCartItemQuantity(item.id, item.quantity - 1)}
+                        >
+                          <Ionicons name="remove" size={20} color="#00B386" />
+                        </TouchableOpacity>
+                        <Text style={styles.quantityText}>{item.quantity}</Text>
+                        <TouchableOpacity
+                          style={styles.quantityButton}
+                          onPress={() => updateCartItemQuantity(item.id, item.quantity + 1)}
+                        >
+                          <Ionicons name="add" size={20} color="#00B386" />
+                        </TouchableOpacity>
+                      </View>
+                    </View>
+                  ))}
+                </ScrollView>
+                
+                <View style={styles.cartFooter}>
+                  <View style={styles.totalSection}>
+                    <Text style={styles.totalLabel}>Total:</Text>
+                    <Text style={styles.totalPrice}>₵{getTotalPrice().toFixed(2)}</Text>
+                  </View>
+                  <TouchableOpacity
+                    style={styles.checkoutButton}
+                    onPress={() => {
+                      Alert.alert('Checkout', 'Proceeding to checkout...');
+                      setIsCartVisible(false);
+                    }}
+                  >
+                    <Text style={styles.checkoutButtonText}>Proceed to Checkout</Text>
+                  </TouchableOpacity>
+                </View>
+              </>
+            )}
+          </View>
+        </Modal>
     </GestureHandlerRootView>
   );
 }

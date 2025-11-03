@@ -1,8 +1,11 @@
 import { FontAwesome, Ionicons, MaterialIcons } from '@expo/vector-icons';
+import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { ResizeMode, Video } from 'expo-av';
+import { StatusBar } from 'expo-status-bar';
 import React, { useRef, useState } from 'react';
-import { Alert, Dimensions, Image, Linking, SafeAreaView, Share, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Alert, Dimensions, Image, Linking, Share, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { GestureHandlerRootView, PanGestureHandler, State } from 'react-native-gesture-handler';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import YoutubePlayer from 'react-native-youtube-iframe';
 
 interface MenuItemCardProps {
@@ -45,6 +48,7 @@ const MenuItemCard: React.FC<MenuItemCardProps> = ({
   onCartPress,
 }) => {
   const { width, height } = Dimensions.get('window');
+  const tabBarHeight = useBottomTabBarHeight();
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
   const [isLocationExpanded, setIsLocationExpanded] = useState(false);
   const [isFavorite, setIsFavorite] = useState(false);
@@ -66,26 +70,26 @@ const MenuItemCard: React.FC<MenuItemCardProps> = ({
   const pages = [
     {
       type: 'image',
-      source: { uri: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=800&h=1200&fit=crop' },
-      title: "Lettuce Wraps",
+      source: { uri: 'https://images.unsplash.com/photo-1595331506998-955704de9a1e?w=800&h=1200&fit=crop' },
+      title: "Shawarma Wrap",
       description: "Crisp lettuce leaves filled with seasoned beef, fresh veggies, and a tangy sauce."
     },
     {
       type: 'image',
-      source: { uri: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=800&h=1200&fit=crop' },
-      title: "Fresh Salad Bowl",
+      source: { uri: 'https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=800&h=1200&fit=crop' },
+      title: "Margherita Pizza",
       description: "Colorful mixed greens with cherry tomatoes, cucumber, and balsamic dressing."
     },
     {
       type: 'image',
-      source: { uri: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=800&h=1200&fit=crop' },
+      source: { uri: 'https://images.unsplash.com/photo-1604503468506-a8da13d82791?w=800&h=1200&fit=crop' },
       title: "Grilled Chicken",
       description: "Juicy grilled chicken breast with herbs and spices, served with roasted vegetables."
     },
     {
       type: 'image',
-      source: { uri: 'https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=800&h=1200&fit=crop' },
-      title: "Pasta Carbonara",
+      source: { uri: 'https://images.unsplash.com/photo-1598515214211-89d3c73ae83b?w=800&h=1200&fit=crop' },
+      title: "BBQ Chicken",
       description: "Creamy pasta with crispy bacon, parmesan cheese, and perfectly cooked eggs."
     }
   ];
@@ -179,7 +183,8 @@ ${currentPageData.description}
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.container} edges={['top']}>
+      <StatusBar style="dark" />
       {/* Full Screen Background - Video or Image */}
       {currentPageData.type === 'youtube' ? (
         <View style={styles.videoContainer}>
@@ -209,7 +214,7 @@ ${currentPageData.description}
           <View style={styles.overlay} />
         </View>
       ) : (
-        <View style={styles.imageBackground}>
+        <View style={styles.imageContainer}>
           <Image 
             source={currentPageData.source} 
             style={styles.imageBackground}
@@ -218,7 +223,7 @@ ${currentPageData.description}
             onLoad={() => console.log('Image loaded successfully')}
           />
           {/* Subtle Dark Overlay for Better Contrast */}
-        <View style={styles.overlay} />
+          <View style={styles.overlay} />
         </View>
       )}
       
@@ -231,11 +236,6 @@ ${currentPageData.description}
         style={styles.rightNavArea} 
         onPress={() => setCurrentPage(Math.min(pages.length - 1, currentPage + 1))}
       />
-        
-        {/* Top Left - Filter Icon Badge */}
-        <TouchableOpacity style={styles.topLeftBadge} onPress={() => setIsFilterVisible(true)}>
-          <Ionicons name="options" size={20} color="#333" />
-        </TouchableOpacity>
         
         {/* Page Navigation Dots */}
         <View style={styles.pageDots}>
@@ -256,11 +256,6 @@ ${currentPageData.description}
             onPress={() => setCurrentPage(3)}
           />
         </View>
-        
-        {/* Top Right - Search Icon Badge */}
-        <TouchableOpacity style={styles.topRightBadge} onPress={() => setIsSearchVisible(!isSearchVisible)}>
-          <Ionicons name="search" size={20} color="#333" />
-        </TouchableOpacity>
         
         {/* Search Input Field */}
         {isSearchVisible && (
@@ -286,7 +281,7 @@ ${currentPageData.description}
         )}
         
         {/* Glassmorphism Content Card */}
-        <View style={styles.glassCard}>
+        <View style={[styles.glassCard, { bottom: tabBarHeight, paddingBottom: 20 }]}>
           <View style={styles.cardContent}>
             
             {/* Food Title and Social Stats Row */}
@@ -540,19 +535,25 @@ ${currentPageData.description}
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#fff',
   },
   videoContainer: {
-    flex: 1,
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+  },
+  videoBackground: {
     width: '100%',
     height: '100%',
   },
-  videoBackground: {
+  imageContainer: {
     flex: 1,
     width: '100%',
     height: '100%',
   },
   imageBackground: {
-    flex: 1,
     width: '100%',
     height: '100%',
   },
@@ -656,7 +657,7 @@ const styles = StyleSheet.create({
   },
   pageDots: {
     position: 'absolute',
-    top: 20,
+    top: 5,
     alignSelf: 'center',
     flexDirection: 'row',
     zIndex: 1,
@@ -683,7 +684,6 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.15)',
     paddingHorizontal: 0,
     paddingTop: 20,
-    paddingBottom: 50,
     elevation: 10,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: -4 },
@@ -780,7 +780,7 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   foodTitle: {
-    fontSize: 22,
+    fontSize: 16,
     fontWeight: '700',
     color: '#fff',
     marginBottom: 6,
