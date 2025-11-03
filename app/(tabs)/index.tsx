@@ -1,10 +1,10 @@
-import { Ionicons } from '@expo/vector-icons';
-import { LinearGradient } from 'expo-linear-gradient';
-import { Image } from 'expo-image';
-import React from 'react';
-import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { router } from 'expo-router';
 import { useUser } from '@/contexts/UserContext';
+import { Ionicons } from '@expo/vector-icons';
+import { Image } from 'expo-image';
+import { LinearGradient } from 'expo-linear-gradient';
+import { router } from 'expo-router';
+import React from 'react';
+import { SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 export default function HomeScreen() {
   const { user } = useUser();
@@ -25,7 +25,7 @@ export default function HomeScreen() {
   const categories = ['All', 'Restaurant', 'Local', 'Fine dinning'];
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
         <View style={styles.greetingSection}>
@@ -53,7 +53,7 @@ export default function HomeScreen() {
         </View>
 
         {/* Promotional Banner */}
-        <TouchableOpacity style={styles.bannerContainer} onPress={() => router.push('/(tabs)/explore')}>
+        <View style={styles.bannerContainer}>
           <LinearGradient colors={['#2C3E50', '#34495E']} style={styles.banner}>
             <View style={styles.bannerContent}>
               <View style={styles.bannerText}>
@@ -72,7 +72,7 @@ export default function HomeScreen() {
               />
             </View>
           </LinearGradient>
-        </TouchableOpacity>
+        </View>
 
         {/* Categories */}
         <View style={styles.categoriesContainer}>
@@ -107,10 +107,9 @@ export default function HomeScreen() {
           <Text style={styles.sectionTitle}>Popular Meals</Text>
           <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.horizontalScroll}>
             {popularMeals.map((meal) => (
-              <TouchableOpacity 
+              <View
                 key={meal.id} 
                 style={styles.mealCard}
-                onPress={() => router.push('/(tabs)/explore')}
               >
                 <View style={styles.mealImageContainer}>
                   <Image source={{ uri: meal.image }} style={styles.mealImage} />
@@ -129,20 +128,20 @@ export default function HomeScreen() {
                   </View>
                   <Text style={styles.mealPrice}>{meal.price}</Text>
                 </View>
-              </TouchableOpacity>
+              </View>
             ))}
           </ScrollView>
         </View>
 
         <View style={{ height: 100 }} />
       </ScrollView>
-    </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#fff' },
-  header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 20, paddingTop: 10, paddingBottom: 20 },
+  header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 20, paddingTop: 5, paddingBottom: 20 },
   greetingSection: { flexDirection: 'row', alignItems: 'center', gap: 12 },
   avatarContainer: { justifyContent: 'center', alignItems: 'center' },
   welcomeText: { fontSize: 12, color: '#666' },

@@ -1,6 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
+import { router } from 'expo-router';
 import React from 'react';
 import { Alert, Dimensions, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
@@ -15,7 +16,7 @@ export default function ExploreScreen() {
     <View style={styles.container}>
       {/* Top Navigation */}
       <View style={styles.topNav}>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => router.replace('/(tabs)/index')}>
           <Text style={styles.navText}>◄ Camera</Text>
         </TouchableOpacity>
         <View style={styles.dots}>
