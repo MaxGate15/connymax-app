@@ -29,7 +29,9 @@ export default function HomeScreen() {
       {/* Header */}
       <View style={styles.header}>
         <View style={styles.greetingSection}>
-          <Image source={{ uri: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=50' }} style={styles.avatar} />
+          <View style={styles.avatarContainer}>
+            <Ionicons name="person-circle" size={50} color="#00B386" />
+          </View>
           <View>
             <Text style={styles.welcomeText}>Welcome Back</Text>
             <Text style={styles.username}>{user?.name || 'Customer'}</Text>
@@ -142,7 +144,7 @@ const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#fff' },
   header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 20, paddingTop: 10, paddingBottom: 20 },
   greetingSection: { flexDirection: 'row', alignItems: 'center', gap: 12 },
-  avatar: { width: 50, height: 50, borderRadius: 25 },
+  avatarContainer: { justifyContent: 'center', alignItems: 'center' },
   welcomeText: { fontSize: 12, color: '#666' },
   username: { fontSize: 16, fontWeight: 'bold', color: '#333' },
   searchContainer: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#f8f9fa', borderRadius: 15, paddingHorizontal: 15, paddingVertical: 12, marginHorizontal: 20, marginBottom: 20, gap: 10 },
